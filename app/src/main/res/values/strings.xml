@@ -1,0 +1,93 @@
+<resources>
+    <string name="app_name">Arendator</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_bookmarks">Закладки</string>
+
+    <string name="home">Главная</string>
+    <string name="remove_bookmarks">Удалить закладки</string>
+
+    <string name="confirm">Да</string>
+    <string name="cancel">Отмена</string>
+
+    <string name="settings">Настройки</string>
+    <string name="bookmarks">Закладки</string>
+
+    <string name="return_back">Вернуться назад</string>
+
+    <string name="add_favorites">Добавить в избранное</string>
+
+    <string name="empty_description">Смотрите фото для подробностей</string>
+
+    <string name="photo_description">Фотография</string>
+    <string name="vk_link">Ссылка на профиль</string>
+
+    <string name="farebase_error">Произошла ошибка при синхронизации с Google Play. Убедитесь, что у вас активирована последняя версия для получения уведомлений.</string>
+    <string name="send_token_error">Произошла ошибка при сохранении настроек на сервере. Попробуйте снова через некоторое время.</string>
+
+    <string name="drop_down_description">Стрелка меню с городами</string>
+
+
+    <string name="no_data_available">Объявления отсутствуют</string>
+    <string name="no_bookmarks">Список пуст</string>
+    <string name="key_words_alert">"Допускается не более 5 ключевых слов"</string>
+
+    <string name="confirm_bookmarks_deletion">Вы действительно хотите удалить объявления из закладок?</string>
+
+
+    <string name="favorites_added">Добавлено в избранное</string>
+    <string name="database_unavailable">Проблемы при работе с Базой данных</string>
+    <string name="contains_photos">Есть фотографии</string>
+
+    <string name="refresh_results">Обновить страницу</string>
+
+    <string name="results_failure">Произошла ошибка при получении данных с сервера</string>
+
+    <string name="today_time">Сегодня</string>
+    <string name="yesterday_time">Вчера</string>
+    <string name="prefix_time">&#160;в&#160;</string>
+    <string-array name="months">
+        <item>Января</item>
+        <item>Февраля</item>
+        <item>Марта</item>
+        <item>Апреля</item>
+        <item>Мая</item>
+        <item>Июня</item>
+        <item>Июля</item>
+        <item>Августа</item>
+        <item>Сентября</item>
+        <item>Октября</item>
+        <item>Ноября</item>
+        <item>Декабря</item>
+    </string-array>
+
+    <string-array name="city_names">
+        <item>Нижний Новгород</item>
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+    </string-array>
+
+    <string-array name="city_values" translatable="false">
+        <item>nn</item>
+        <item>msc</item>
+        <item>spb</item>
+    </string-array>
+
+    <string name="enable_notifications">Push-уведомления</string>
+
+    <string name="save_settings">Сохранить настройки</string>
+
+    <string name="new_ads_flag">new</string>
+
+    <string name="rent_in">Сниму</string>
+    <string name="rent_out">Сдам</string>
+
+    <string name="apartment">Квартиру</string>
+    <string name="room">Комнату</string>
+
+    <string name="key_words">Ключевые слова</string>
+    <string name="add_key_word">+ Добавить</string>
+
+    <string name="gallery_count">%1$d из %2$d</string>
+
+    <string name="default_notification_channel_id">Advert_Channel_id</string>
+</resources>

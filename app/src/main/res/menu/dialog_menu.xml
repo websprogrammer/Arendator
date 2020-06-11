@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_back_home"
+        android:title="@string/home"
+        android:icon="@mipmap/baseline_home_white_36"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom" />
+</menu>

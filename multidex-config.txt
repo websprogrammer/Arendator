@@ -1,0 +1,5 @@
+com/google/firebase/provider/FirebaseInitProvider.class
+
+
+
+JSONObject("{'d': [1, 2, 3]}").getJSONArray("d")[1]

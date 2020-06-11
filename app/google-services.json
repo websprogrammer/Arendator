@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "711338540841",
+    "firebase_url": "https://life-priority.firebaseio.com",
+    "project_id": "life-priority",
+    "storage_bucket": "life-priority.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711338540841:android:670b08a8f8dea01c434138",
+        "android_client_info": {
+          "package_name": "com.kirille.lifepriority"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711338540841-u6r0e0ggavt31pj969j06ht8o3dorl9a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9N8nBY2QzSDz3ltdbBx2T1sSxBnqPlHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711338540841-u6r0e0ggavt31pj969j06ht8o3dorl9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
