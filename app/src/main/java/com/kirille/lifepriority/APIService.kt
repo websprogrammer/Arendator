@@ -15,7 +15,8 @@ interface APIService {
             @Query("city") city: String?,
             @Query("key_words") key_words: String?,
             @Query("rent_type") rent_type: Int?,
-            @Query("room_type") room_type: Int?
+            @Query("room_type") room_type: Int?,
+            @Query("districts") districts: String?
 
     ): Call<JsonObject>
 
@@ -26,12 +27,21 @@ interface APIService {
             @Query("key_words") key_words: String?,
             @Query("rent_type") rent_type: Int?,
             @Query("room_type") room_type: Int?,
-            @Query("notifications") notifications: Int?
+            @Query("notifications") notifications: Int?,
+            @Query("districts") districts: String?
+    ): Call<JsonObject>
+
+    @GET("send_feedback")
+    fun sendFeedback(
+            @Query("city") city: String?,
+            @Query("post_id") post_id: Int?,
+            @Query("type") type: Int?,
+            @Query("message") message: String?
     ): Call<JsonObject>
 
 
     companion object Factory {
-        private const val BASE_URL = "http://104.248.4.131/"
+        private const val BASE_URL = "http://122.251.2.110/"
 
         fun create(): APIService {
             val retrofit = Retrofit.Builder()

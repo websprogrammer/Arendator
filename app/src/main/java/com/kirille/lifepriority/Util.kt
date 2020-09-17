@@ -11,7 +11,8 @@ data class SharedPrefResult(
         val rentType: Int,
         val roomType: Int,
         val keyWords: String?,
-        val notifications: Int
+        val notifications: Int,
+        val districts: String?
 )
 
 
@@ -36,7 +37,9 @@ fun getPreferences(activity: FragmentActivity?, resources: Resources): SharedPre
 
     val notifications = sharedPref.getInt("notifications", 0)
 
-    return SharedPrefResult(city, rentType, roomType, keyWords, notifications)
+    val districts = sharedPref.getString("districts", "")
+
+    return SharedPrefResult(city, rentType, roomType, keyWords, notifications, districts)
 }
 
 

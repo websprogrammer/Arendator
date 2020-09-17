@@ -192,11 +192,11 @@ class MainFragment : androidx.fragment.app.Fragment() {
             }
         }
 
-        val (city, rentType, roomType, keyWords, _) = getPreferences(activity, resources)
+        val (city, rentType, roomType, keyWords, _, districts) = getPreferences(activity, resources)
 
         val apiService = APIService.create()
         apiService
-            .getAdverts(currentPage, city, keyWords, rentType, roomType)
+            .getAdverts(currentPage, city, keyWords, rentType, roomType, districts)
             .enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     try {

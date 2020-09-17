@@ -1,5 +1,6 @@
 package com.kirille.lifepriority
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -8,13 +9,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.JsonObject
 import org.json.JSONArray
 import org.json.JSONException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class AdvertDialogFragment: DialogFragment() {
@@ -25,6 +32,8 @@ class AdvertDialogFragment: DialogFragment() {
 
     private val addingTaskCode = 2
     private val dialogFragmentTag = "dialogFragmentTag"
+
+    private val settingsFileName = "com.kirille.lifepriority.prefs"
 
     private val menuListener: Toolbar.OnMenuItemClickListener = Toolbar.OnMenuItemClickListener {
         itemMenu ->
@@ -63,6 +72,7 @@ class AdvertDialogFragment: DialogFragment() {
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
+    @SuppressLint("InflateParams")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dialog, container, false)
 
@@ -77,6 +87,52 @@ class AdvertDialogFragment: DialogFragment() {
 
         val advertTextDetail = view.findViewById<TextView>(R.id.advertTextDetail)
         advertTextDetail.text = item!!.description
+
+        val alertValues = resources.getStringArray(R.array.alert_values)
+
+        val floatButton = view.findViewById<FloatingActionButton>(R.id.floatButton)
+        floatButton.setOnClickListener {
+
+            val feedbackDialogBuilder = AlertDialog.Builder(mContext!!)
+            feedbackDialogBuilder.setTitle(R.string.alert_title)
+            feedbackDialogBuilder.setItems(alertValues){
+                _, which ->
+
+                val selectedOption = which + 1
+                val sharedPref = activity?.getSharedPreferences(settingsFileName, 0)
+                val city = sharedPref!!.getString("city", "nn")
+
+
+                if (selectedOption != 4) {
+                    sendFeedback(view, city!!, item!!, selectedOption, "")
+                } else {
+                    val otherFeedbackDialogBuilder = AlertDialog.Builder(mContext!!)
+                    val otherFeedbackLayout = layoutInflater.inflate(R.layout.other_feedback_layout, null)
+
+                    otherFeedbackDialogBuilder.setView(otherFeedbackLayout)
+                    otherFeedbackDialogBuilder.setMessage(R.string.other_alert_title)
+                    otherFeedbackDialogBuilder.setPositiveButton(R.string.send_feedback_button) {
+                        dialog, _ ->
+
+                        val message = otherFeedbackLayout.findViewById<EditText>(R.id.editOther)
+                        sendFeedback(view, city!!, item!!, selectedOption, message.text.toString())
+
+                        dialog.dismiss()
+                    }
+
+                    otherFeedbackDialogBuilder.setCancelable(true)
+                    otherFeedbackDialogBuilder.create()
+                    otherFeedbackDialogBuilder.show()
+
+                }
+
+            }
+            feedbackDialogBuilder.setCancelable(true)
+            feedbackDialogBuilder.create()
+            feedbackDialogBuilder.show()
+        }
+
+
 
         try {
             val jsonPhotoArray = JSONArray(item!!.photos)
@@ -136,6 +192,35 @@ class AdvertDialogFragment: DialogFragment() {
 
         return view
     }
+
+
+    private fun sendFeedback(view: View, city: String, item: AdvertItem, type: Int, message: String) {
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar2)
+        progressBar?.visibility = ProgressBar.VISIBLE
+
+        val apiService = APIService.create()
+        apiService
+                .sendFeedback(city, item.postId, type, message)
+                .enqueue(object : Callback<JsonObject> {
+                    override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
+                        progressBar?.visibility = ProgressBar.GONE
+                        Toast.makeText(mContext,
+                                R.string.send_token_error,
+                                Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
+                        progressBar?.visibility = ProgressBar.GONE
+                        Toast.makeText(mContext,
+                                R.string.send_feedback,
+                                Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+
+
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

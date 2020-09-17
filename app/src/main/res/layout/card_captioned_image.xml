@@ -69,11 +69,11 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/favorites_added"
             android:src="@drawable/twotone_star_black_36"
-            android:tint="#2a5885"
             app:layout_constraintBottom_toTopOf="@+id/advertText"
             app:layout_constraintEnd_toStartOf="@+id/photosIcon"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:tint="#2a5885" />
 
         <TextView
             android:id="@+id/newAdvert"

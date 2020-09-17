@@ -1,5 +1,6 @@
 package com.kirille.lifepriority
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -37,6 +38,11 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     private var cityTextView: TextView? = null
     private var selectedCityItem = 0
 
+    private var districtTextView: TextView? = null
+    private var checkedDistricts = mutableListOf<Boolean>()
+    private var districts: String? = null
+
+
     private var rentIn: Boolean = false
     private var rentOut: Boolean = false
 
@@ -57,6 +63,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         setHasOptionsMenu(true)
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -88,19 +95,27 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         val cityLayout = view.findViewById<RelativeLayout>(R.id.cityLayout)
         cityLayout.setOnClickListener {
-            openDialog()
+            openCityDialog(view)
         }
 
         val rentInCheckbox = view.findViewById<CheckBox>(R.id.rentInCheckbox)
-        rentInCheckbox.setOnCheckedChangeListener { _, isChecked ->
+        rentInCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
             rentIn = isChecked
+            if (buttonView.isPressed){
+                setDistrictView(view)
+            }
         }
         rentInCheckbox.isChecked = sharedPref!!.getBoolean("rentIn", false)
 
 
         val rentOutCheckbox = view.findViewById<CheckBox>(R.id.rentOutCheckbox)
-        rentOutCheckbox.setOnCheckedChangeListener { _, isChecked ->
+        rentOutCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
             rentOut = isChecked
+
+            if (buttonView.isPressed){
+                setDistrictView(view)
+            }
+
         }
         rentOutCheckbox.isChecked = sharedPref!!.getBoolean("rentOut", false)
 
@@ -179,12 +194,50 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         }
 
+        setDistrictView(view)
         setKeyWords()
 
         return view
     }
 
-    private fun openDialog() {
+
+    private fun setDistrictView(view: View){
+        val districtLayout = view.findViewById<RelativeLayout>(R.id.districtLayout)
+
+        if (city == "nn" && (rentOut || (!rentIn && !rentOut))){
+            val districtNames = resources.getStringArray(R.array.district_names)
+            districtTextView = view.findViewById(R.id.district_select)
+
+            districts = sharedPref!!.getString("districts", "")
+            val districtsList = districts?.split("|")!!.toTypedArray()
+
+            for (district in districtNames) {
+                checkedDistricts.add(district in districtsList)
+            }
+
+            if (districtsList.isEmpty() || districtsList[0] == "" || districtsList.size == districtNames.size) {
+                districtTextView?.text = resources.getString(R.string.any_district)
+            } else {
+                districtTextView?.text = districtsList.joinToString(", ")
+            }
+
+            districtLayout?.setOnClickListener {
+                openDistrictDialog()
+            }
+
+            districtLayout?.visibility = RelativeLayout.VISIBLE
+        }
+        else {
+            districts = ""
+            checkedDistricts = mutableListOf()
+            districtLayout?.setOnClickListener(null)
+            districtLayout?.visibility = RelativeLayout.GONE
+        }
+
+    }
+
+
+    private fun openCityDialog(view: View) {
         val cityValues = resources.getStringArray(R.array.city_values)
         val cityNames = resources.getStringArray(R.array.city_names)
 
@@ -193,12 +246,69 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             city = cityValues[which]
             cityTextView?.text = cityNames[which]
             selectedCityItem = which
+            setDistrictView(view)
             dialog.cancel()
         }
 
         alertDialogBuilder.create()
         alertDialogBuilder.show()
     }
+
+
+    private fun openDistrictDialog() {
+        val districtNames = resources.getStringArray(R.array.district_names)
+        val alertDialogBuilder = AlertDialog.Builder(mContext!!)
+
+        val currentCheckedDistricts = checkedDistricts.toMutableList()
+
+        alertDialogBuilder.setMultiChoiceItems(districtNames, checkedDistricts.toBooleanArray()) {
+            _, which, isChecked ->
+            currentCheckedDistricts[which] = isChecked
+        }
+
+        alertDialogBuilder.setPositiveButton(R.string.save_districts) {
+            dialog, _ ->
+            checkedDistricts = currentCheckedDistricts.toMutableList()
+
+            setDistrictsNames()
+
+            dialog.cancel()
+        }
+        alertDialogBuilder.setNegativeButton(R.string.cancel_districts) {
+            dialog, _ -> dialog.cancel()
+        }
+        alertDialogBuilder.create()
+        alertDialogBuilder.show()
+    }
+
+    private fun getDistrictsList(): ArrayList<String> {
+        val districtNames = resources.getStringArray(R.array.district_names)
+        val districtsList = arrayListOf<String>()
+        for (n in checkedDistricts.indices){
+            if (checkedDistricts[n]) {
+                districtsList.add(districtNames[n])
+            }
+        }
+        return districtsList
+    }
+
+
+    private fun setDistrictsNames(){
+        val districtNames = resources.getStringArray(R.array.district_names)
+        val districtsList = getDistrictsList()
+
+        if (districtsList.isEmpty()|| districtsList.size == districtNames.size) {
+            districtTextView?.text = resources.getString(R.string.any_district)
+        } else {
+            districtTextView?.text = districtsList.joinToString(", ")
+        }
+
+        districts = if (districtsList.size == 0 || districtsList.size == districtNames.size) {
+            ""
+        } else districtsList.joinToString("|")
+
+    }
+
 
     private fun setKeyWords() {
         keyWords = sharedPref!!.getString("keyWords", "")
@@ -210,6 +320,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             keyWordsAdapter?.notifyDataSetChanged()
         }
     }
+
 
     private fun saveSettings() {
         progressBar = view?.findViewById(R.id.progressBar)
@@ -250,6 +361,11 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             apply()
         }
 
+        with(sharedPref!!.edit()) {
+            putString("districts", districts)
+            apply()
+        }
+
         // Just saving  settings in sharedPref if token is not available
         if (token.isNullOrBlank()) {
             successSaveHandler()
@@ -258,6 +374,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         sendTokenToServer()
     }
+
 
     private fun sendTokenToServer() {
         val roomType = if (isApartment && !isRoom) 1
@@ -270,21 +387,22 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         val apiService = APIService.create()
         apiService
-                .sendToken(token, city, keyWords, rentType, roomType, notifications)
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
-                        progressBar?.visibility = ProgressBar.GONE
-                        Toast.makeText(mContext,
-                                R.string.send_token_error,
-                                Toast.LENGTH_SHORT).show()
-                    }
+            .sendToken(token, city, keyWords, rentType, roomType, notifications, districts)
+            .enqueue(object : Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
+                    progressBar?.visibility = ProgressBar.GONE
+                    Toast.makeText(mContext,
+                            R.string.send_token_error,
+                            Toast.LENGTH_SHORT).show()
+                }
 
-                    override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
-                        successSaveHandler()
-                    }
+                override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
+                    successSaveHandler()
+                }
 
-                })
+            })
     }
+
 
     private fun successSaveHandler() {
         progressBar?.visibility = ProgressBar.GONE
@@ -297,6 +415,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         inflater.inflate(R.menu.settings_menu, menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_save_settings -> {
@@ -306,6 +425,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

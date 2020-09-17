@@ -38,7 +38,7 @@ class BookmarksActivity : AppCompatActivity() {
                 startActivityForResult(intent, 0)
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item!!)
         }
     }
 

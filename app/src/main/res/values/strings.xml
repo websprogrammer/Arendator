@@ -24,7 +24,10 @@
     <string name="farebase_error">Произошла ошибка при синхронизации с Google Play. Убедитесь, что у вас активирована последняя версия для получения уведомлений.</string>
     <string name="send_token_error">Произошла ошибка при сохранении настроек на сервере. Попробуйте снова через некоторое время.</string>
 
-    <string name="drop_down_description">Стрелка меню с городами</string>
+    <string name="send_feedback">Feedback отправлен.</string>
+    <string name="send_feedback_button">Отправить</string>
+
+    <string name="drop_down_description">Стрелка меню c выбором</string>
 
 
     <string name="no_data_available">Объявления отсутствуют</string>
@@ -72,11 +75,36 @@
         <item>spb</item>
     </string-array>
 
+    <string-array name="district_names">
+        <item>Автозаводский</item>
+        <item>Канавинский</item>
+        <item>Советский</item>
+        <item>Сормовский</item>
+        <item>Нижегородский</item>
+        <item>Ленинский</item>
+        <item>Приокский</item>
+        <item>Московский</item>
+    </string-array>
+
+    <string name="save_districts">OK</string>
+    <string name="cancel_districts">Отмена</string>
+
+    <string name="any_district">Любой район</string>
+
     <string name="enable_notifications">Push-уведомления</string>
 
     <string name="save_settings">Сохранить настройки</string>
 
     <string name="new_ads_flag">new</string>
+
+    <string name="alert_title">Сообщить об ошибке</string>
+    <string name="other_alert_title">Опишите ошибку</string>
+    <string-array name="alert_values">
+        <item>Агент</item>
+        <item>Спам</item>
+        <item>Неверный район</item>
+        <item>Другое</item>
+    </string-array>
 
     <string name="rent_in">Сниму</string>
     <string name="rent_out">Сдам</string>
