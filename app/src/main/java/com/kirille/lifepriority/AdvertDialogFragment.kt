@@ -37,32 +37,32 @@ class AdvertDialogFragment: DialogFragment() {
 
     private val menuListener: Toolbar.OnMenuItemClickListener = Toolbar.OnMenuItemClickListener {
         itemMenu ->
-            when(itemMenu?.itemId){
-                R.id.vk_link -> {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(item!!.profileLink))
-                    startActivity(browserIntent)
-                }
+        when(itemMenu?.itemId){
+            R.id.vk_link -> {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(item!!.profileLink))
+                startActivity(browserIntent)
+            }
 
-                R.id.action_favorite -> {
-                    if (targetFragment is MainFragment) {
-                        val menuMenu = toolbar?.menu?.getItem(0)
+            R.id.action_favorite -> {
+                if (targetFragment is MainFragment) {
+                    val menuMenu = toolbar?.menu?.getItem(0)
 
-                        if (item!!.isFavorite) {
-                            DeleteFavoriteTask(mContext!!, item!!.postId).execute()
-                            item!!.isFavorite = false
-                            menuMenu?.setIcon(R.mipmap.baseline_favorite_border_white_36)
-                        } else {
-                            AddFavoriteTask(mContext!!, item!!).execute()
-                            item!!.isFavorite = true
-                            menuMenu?.setIcon(R.mipmap.baseline_favorite_white_36)
-                        }
-
-                        (targetFragment as? MainFragment)?.advertAdapter?.notifyDataSetChanged()
-
+                    if (item!!.isFavorite) {
+                        DeleteFavoriteTask(mContext!!, item!!.postId).execute()
+                        item!!.isFavorite = false
+                        menuMenu?.setIcon(R.mipmap.baseline_favorite_border_white_36)
+                    } else {
+                        AddFavoriteTask(mContext!!, item!!).execute()
+                        item!!.isFavorite = true
+                        menuMenu?.setIcon(R.mipmap.baseline_favorite_white_36)
                     }
 
+                    (targetFragment as? MainFragment)?.advertAdapter?.notifyDataSetChanged()
+
                 }
+
             }
+        }
         return@OnMenuItemClickListener false
     }
 
@@ -111,18 +111,21 @@ class AdvertDialogFragment: DialogFragment() {
 
                     otherFeedbackDialogBuilder.setView(otherFeedbackLayout)
                     otherFeedbackDialogBuilder.setMessage(R.string.other_alert_title)
-                    otherFeedbackDialogBuilder.setPositiveButton(R.string.send_feedback_button) {
-                        dialog, _ ->
+                    otherFeedbackDialogBuilder.setPositiveButton(R.string.send_feedback_button, null)
 
-                        val message = otherFeedbackLayout.findViewById<EditText>(R.id.editOther)
-                        sendFeedback(view, city!!, item!!, selectedOption, message.text.toString())
-
-                        dialog.dismiss()
-                    }
 
                     otherFeedbackDialogBuilder.setCancelable(true)
-                    otherFeedbackDialogBuilder.create()
-                    otherFeedbackDialogBuilder.show()
+                    val otherFeedbackDialog = otherFeedbackDialogBuilder.create()
+                    otherFeedbackDialog.show()
+
+                    val positiveBtn = otherFeedbackDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    positiveBtn.setOnClickListener {
+                        val message = otherFeedbackLayout.findViewById<EditText>(R.id.editOther)
+                        if (message.text.isNotEmpty()) {
+                            sendFeedback(view, city!!, item!!, selectedOption, message.text.toString())
+                            otherFeedbackDialog.dismiss()
+                        }
+                    }
 
                 }
 

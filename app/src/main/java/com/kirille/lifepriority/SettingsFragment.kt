@@ -204,7 +204,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     private fun setDistrictView(view: View){
         val districtLayout = view.findViewById<RelativeLayout>(R.id.districtLayout)
 
-        if (city == "nn" && (rentOut || (!rentIn && !rentOut))){
+        if (city == "nn" && (rentIn || (!rentIn && !rentOut))){
             val districtNames = resources.getStringArray(R.array.district_names)
             districtTextView = view.findViewById(R.id.district_select)
 
@@ -381,8 +381,8 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         else if (!isApartment && isRoom) 2
         else 0
 
-        val rentType = if (rentIn && !rentOut) 1
-        else if (!rentIn && rentOut) 2
+        val rentType = if (rentIn && !rentOut) 2
+        else if (!rentIn && rentOut) 1
         else 0
 
         val apiService = APIService.create()

@@ -106,8 +106,9 @@
         <item>Другое</item>
     </string-array>
 
-    <string name="rent_in">Сниму</string>
-    <string name="rent_out">Сдам</string>
+    <string name="settings_text">Я хочу:</string>
+    <string name="rent_in">Снять</string>
+    <string name="rent_out">Сдать</string>
 
     <string name="apartment">Квартиру</string>
     <string name="room">Комнату</string>

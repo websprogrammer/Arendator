@@ -22,8 +22,8 @@ fun getPreferences(activity: FragmentActivity?, resources: Resources): SharedPre
 
     val rentIn = sharedPref.getBoolean("rentIn", false)
     val rentOut = sharedPref.getBoolean("rentOut", false)
-    val rentType = if (rentIn && !rentOut) 1
-        else if (!rentIn && rentOut) 2
+    val rentType = if (rentIn && !rentOut) 2
+        else if (!rentIn && rentOut) 1
         else 0
 
     val isApartment = sharedPref.getBoolean("isApartment", false)
