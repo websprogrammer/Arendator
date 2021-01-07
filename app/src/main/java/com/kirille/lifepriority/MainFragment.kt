@@ -3,6 +3,7 @@ package com.kirille.lifepriority
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,8 +30,8 @@ class MainFragment : androidx.fragment.app.Fragment() {
     private var items: ArrayList<AdvertItem> = ArrayList()
 
     private var scrollAvailable = false
-    private var currentPage = 1
-    private var pageCount: Int? = 0
+
+    private var lastDate = 0
 
     private val requestCode = 1
     private val dialogTaskTag = "DialogTaskTag"
@@ -72,13 +73,14 @@ class MainFragment : androidx.fragment.app.Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
 
                 val mLayoutManager = recyclerView.layoutManager as LinearLayoutManager
-                if (!scrollAvailable){
+                if (scrollAvailable) {
                     val position = mLayoutManager.findLastVisibleItemPosition()
-                    if (position == items.size - 1 && currentPage <= pageCount!!){
+                    if (position == items.size - 1) {
+                        scrollAvailable = false
                         fetchAdverts()
-                        scrollAvailable = true
                     }
                 }
+
             }
         })
 
@@ -86,10 +88,12 @@ class MainFragment : androidx.fragment.app.Fragment() {
 
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
         swipeRefresh?.setOnRefreshListener {
-            currentPage = 1
             items.clear()
             advertAdapter?.notifyDataSetChanged()
             swipeRefresh?.isRefreshing = false
+            lastDate = 0
+            scrollAvailable = false
+            fetchAdverts(firstPage = true)
         }
         swipeRefresh?.setColorSchemeResources(android.R.color.holo_red_dark)
 
@@ -100,62 +104,68 @@ class MainFragment : androidx.fragment.app.Fragment() {
             fetchAdverts()
         }
 
-        fetchAdverts()
+        fetchAdverts(firstPage = true)
         return view
     }
 
 
-    private fun handleResponse(body: JsonObject) {
-        pageCount = body.get("pages")?.asInt
-        if (pageCount == 0) {
-            setEmptyView()
+    private fun handleResponse(body: JsonObject, firstPage: Boolean) {
+        val adverts = body.get("Adverts")
+
+        if (adverts.isJsonNull) {
+            if (firstPage) {
+                setEmptyView()
+            }
         } else {
-            val adverts = body.get("adverts")?.asJsonArray
             val currentItemSize = items.size
-            for (i in 0 until adverts!!.size()) {
-                val advert = adverts.get(i)?.asJsonObject
+            val jsonData = adverts.asJsonArray
+            for (i in 0 until jsonData!!.size()) {
+                val advert = jsonData.get(i)?.asJsonObject
                 advert!!
 
                 items.add(
-                    AdvertItem(
-                        advert.get("post_id")!!.asInt,
-                        advert.get("profile_name")!!.asString,
-                        advert.get("profile_link")!!.asString,
-                        advert.get("description")!!.asString.trimEnd(),
-                        advert.get("photos")!!.toString(),
-                        advert.get("date")!!.asInt,
-                        isFavorite = false,
-                        isSelected = false,
-                        isNew = false
-                    ))
+                        AdvertItem(
+                                advert.get("PostId")!!.asInt,
+                                advert.get("ProfileName")!!.asString,
+                                advert.get("ProfileLink")!!.asString,
+                                advert.get("Description")!!.asString.trimEnd(),
+                                advert.get("Photos")!!.toString(),
+                                advert.get("Date")!!.asInt,
+                                isFavorite = false,
+                                isSelected = false,
+                                isNew = false
+                        ))
             }
 
             swipeRefresh?.isEnabled = true
             if (items.size > currentItemSize) {
                 advertAdapter?.notifyItemRangeInserted(currentItemSize, items.size)
-                currentPage++
+            }
+
+            lastDate = body.get("LastDate").asInt
+            if (lastDate != 0) {
+                scrollAvailable = true
             }
         }
 
     }
 
     private fun setToken() {
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Toast.makeText(mContext, R.string.farebase_error, Toast.LENGTH_LONG).show()
-                    return@OnCompleteListener
-                }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(dialogTaskTag, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            val token = task.result
 
-                val token = task.result?.token
-                val sharedPref = activity?.getSharedPreferences(settingsFileName, 0)
+            val sharedPref = activity?.getSharedPreferences(settingsFileName, 0)
 
-                with(sharedPref!!.edit()) {
-                    putString("token", token)
-                    apply()
-                }
-
-            })
+            with(sharedPref!!.edit()) {
+                putString("token", token)
+                apply()
+            }
+        })
     }
 
     private fun setEmptyView() {
@@ -169,10 +179,10 @@ class MainFragment : androidx.fragment.app.Fragment() {
         advertAdapter?.notifyItemRemoved(scrollPosition)
     }
 
-    private fun fetchAdverts() {
+    private fun fetchAdverts(firstPage: Boolean = false) {
         var hasItemLoader = false
 
-        if (currentPage == 1) {
+        if (firstPage) {
             progressBar?.visibility = View.VISIBLE
         } else {
             items.add(AdvertItem(
@@ -187,8 +197,8 @@ class MainFragment : androidx.fragment.app.Fragment() {
                     isNew = false
             ))
             hasItemLoader = true
-            advertsRecycler?.post{
-              advertAdapter?.notifyItemInserted(items.size - 1)
+            advertsRecycler?.post {
+                advertAdapter?.notifyItemInserted(items.size - 1)
             }
         }
 
@@ -196,45 +206,44 @@ class MainFragment : androidx.fragment.app.Fragment() {
 
         val apiService = APIService.create()
         apiService
-            .getAdverts(currentPage, city, keyWords, rentType, roomType, districts)
-            .enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    try {
-                        if (hasItemLoader){
+                .getAdverts(lastDate, city, keyWords, rentType, roomType, districts)
+                .enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                        try {
+                            if (hasItemLoader) {
+                                removeItemLoader()
+                            }
+
+                            if (response.isSuccessful) {
+                                val body = response.body()
+                                handleResponse(body!!, firstPage)
+                            } else {
+                                setEmptyView()
+                            }
+
+                        } finally {
+                            progressBar?.visibility = View.GONE
+                        }
+                    }
+
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        if (hasItemLoader) {
                             removeItemLoader()
                         }
+                        Toast.makeText(
+                                activity,
+                                R.string.results_failure,
+                                Toast.LENGTH_LONG
+                        ).show()
 
-                        if (response.isSuccessful){
-                            val body = response.body()
-                            handleResponse(body!!)
-                        } else {
+                        if (firstPage) {
                             setEmptyView()
                         }
 
-                    } finally {
                         progressBar?.visibility = View.GONE
                         scrollAvailable = false
                     }
-                }
-
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    if (hasItemLoader) {
-                        removeItemLoader()
-                    }
-                    Toast.makeText(
-                            activity,
-                            R.string.results_failure,
-                            Toast.LENGTH_LONG
-                    ).show()
-
-                    if (currentPage == 1) {
-                        setEmptyView()
-                    }
-
-                    progressBar?.visibility = View.GONE
-                    scrollAvailable = false
-                }
-            })
+                })
 
     }
 

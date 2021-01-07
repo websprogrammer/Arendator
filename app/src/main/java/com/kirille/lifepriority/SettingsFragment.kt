@@ -41,6 +41,8 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     private var districtTextView: TextView? = null
     private var checkedDistricts = mutableListOf<Boolean>()
     private var districts: String? = null
+    private var districtNames: Array<String>? = null
+    private var currentDistricts = mutableListOf<String>()
 
 
     private var rentIn: Boolean = false
@@ -84,6 +86,13 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             notificationsSwitch.isClickable = true
         }
 
+        districts = sharedPref!!.getString("districts", "")
+        currentDistricts = districts?.split("|")!!.filter {
+            it.isNotEmpty()
+        }.toMutableList()
+
+        districtNames = resources.getStringArray(R.array.district_names)
+
 
         cityTextView = view.findViewById(R.id.city_select)
         val cityNames = resources.getStringArray(R.array.city_names)
@@ -101,7 +110,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         val rentInCheckbox = view.findViewById<CheckBox>(R.id.rentInCheckbox)
         rentInCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
             rentIn = isChecked
-            if (buttonView.isPressed){
+            if (buttonView.isPressed) {
                 setDistrictView(view)
             }
         }
@@ -112,7 +121,7 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         rentOutCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
             rentOut = isChecked
 
-            if (buttonView.isPressed){
+            if (buttonView.isPressed) {
                 setDistrictView(view)
             }
 
@@ -201,41 +210,32 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
 
-    private fun setDistrictView(view: View){
+    private fun setDistrictView(view: View) {
         val districtLayout = view.findViewById<RelativeLayout>(R.id.districtLayout)
 
-        if (city == "nn" && (rentIn || (!rentIn && !rentOut))){
+        if (city == "nn" && (rentIn || (!rentIn && !rentOut))) {
             val districtNames = resources.getStringArray(R.array.district_names)
             districtTextView = view.findViewById(R.id.district_select)
 
-            districts = sharedPref!!.getString("districts", "")
-            val districtsList = districts?.split("|")!!.toTypedArray()
-
             for (district in districtNames) {
-                checkedDistricts.add(district in districtsList)
+                checkedDistricts.add(district in currentDistricts)
             }
 
-            if (districtsList.isEmpty() || districtsList[0] == "" || districtsList.size == districtNames.size) {
+            if (currentDistricts.isEmpty()) {
                 districtTextView?.text = resources.getString(R.string.any_district)
             } else {
-                districtTextView?.text = districtsList.joinToString(", ")
+                districtTextView?.text = currentDistricts.joinToString(", ")
             }
 
-            districtLayout?.setOnClickListener {
-                openDistrictDialog()
-            }
-
+            districtLayout?.setOnClickListener { openDistrictDialog() }
             districtLayout?.visibility = RelativeLayout.VISIBLE
-        }
-        else {
-            districts = ""
-            checkedDistricts = mutableListOf()
+        } else {
+            currentDistricts.clear()
             districtLayout?.setOnClickListener(null)
             districtLayout?.visibility = RelativeLayout.GONE
         }
 
     }
-
 
     private fun openCityDialog(view: View) {
         val cityValues = resources.getStringArray(R.array.city_values)
@@ -258,7 +258,6 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     private fun openDistrictDialog() {
         val districtNames = resources.getStringArray(R.array.district_names)
         val alertDialogBuilder = AlertDialog.Builder(mContext!!)
-
         val currentCheckedDistricts = checkedDistricts.toMutableList()
 
         alertDialogBuilder.setMultiChoiceItems(districtNames, checkedDistricts.toBooleanArray()) {
@@ -266,44 +265,39 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             currentCheckedDistricts[which] = isChecked
         }
 
-        alertDialogBuilder.setPositiveButton(R.string.save_districts) {
-            dialog, _ ->
+        alertDialogBuilder.setPositiveButton(R.string.save_districts) { dialog, _ ->
             checkedDistricts = currentCheckedDistricts.toMutableList()
-
             setDistrictsNames()
-
             dialog.cancel()
         }
-        alertDialogBuilder.setNegativeButton(R.string.cancel_districts) {
-            dialog, _ -> dialog.cancel()
+        alertDialogBuilder.setNegativeButton(R.string.cancel_districts) { dialog, _ ->
+            dialog.cancel()
         }
         alertDialogBuilder.create()
         alertDialogBuilder.show()
     }
 
     private fun getDistrictsList(): ArrayList<String> {
-        val districtNames = resources.getStringArray(R.array.district_names)
         val districtsList = arrayListOf<String>()
-        for (n in checkedDistricts.indices){
+        for (n in checkedDistricts.indices) {
             if (checkedDistricts[n]) {
-                districtsList.add(districtNames[n])
+                districtsList.add(districtNames!![n])
             }
         }
         return districtsList
     }
 
 
-    private fun setDistrictsNames(){
-        val districtNames = resources.getStringArray(R.array.district_names)
+    private fun setDistrictsNames() {
         val districtsList = getDistrictsList()
 
-        if (districtsList.isEmpty()|| districtsList.size == districtNames.size) {
+        if (districtsList.isEmpty() || districtsList.size == districtNames?.size) {
             districtTextView?.text = resources.getString(R.string.any_district)
         } else {
             districtTextView?.text = districtsList.joinToString(", ")
         }
 
-        districts = if (districtsList.size == 0 || districtsList.size == districtNames.size) {
+        districts = if (districtsList.size == 0 || districtsList.size == districtNames?.size) {
             ""
         } else districtsList.joinToString("|")
 
@@ -387,20 +381,28 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
 
         val apiService = APIService.create()
         apiService
-            .sendToken(token, city, keyWords, rentType, roomType, notifications, districts)
-            .enqueue(object : Callback<JsonObject> {
-                override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
-                    progressBar?.visibility = ProgressBar.GONE
-                    Toast.makeText(mContext,
-                            R.string.send_token_error,
-                            Toast.LENGTH_SHORT).show()
-                }
+                .sendToken(token, city, keyWords, rentType, roomType, notifications, districts)
+                .enqueue(object : Callback<JsonObject> {
+                    override fun onFailure(call: Call<JsonObject>?, t: Throwable?) {
+                        failureHandler()
+                    }
 
-                override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
-                    successSaveHandler()
-                }
+                    override fun onResponse(call: Call<JsonObject>?, response: Response<JsonObject>?) {
+                        if (response!!.isSuccessful) {
+                            successSaveHandler()
+                        } else {
+                            failureHandler()
+                        }
+                    }
 
-            })
+                })
+    }
+
+    private fun failureHandler() {
+        progressBar?.visibility = ProgressBar.GONE
+        Toast.makeText(mContext,
+                R.string.send_token_error,
+                Toast.LENGTH_SHORT).show()
     }
 
 

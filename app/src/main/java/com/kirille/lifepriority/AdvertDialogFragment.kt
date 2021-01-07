@@ -24,7 +24,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class AdvertDialogFragment: DialogFragment() {
+class AdvertDialogFragment : DialogFragment() {
     private var mContext: Context? = null
 
     private var item: AdvertItem? = null
@@ -35,9 +35,8 @@ class AdvertDialogFragment: DialogFragment() {
 
     private val settingsFileName = "com.kirille.lifepriority.prefs"
 
-    private val menuListener: Toolbar.OnMenuItemClickListener = Toolbar.OnMenuItemClickListener {
-        itemMenu ->
-        when(itemMenu?.itemId){
+    private val menuListener: Toolbar.OnMenuItemClickListener = Toolbar.OnMenuItemClickListener { itemMenu ->
+        when (itemMenu?.itemId) {
             R.id.vk_link -> {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(item!!.profileLink))
                 startActivity(browserIntent)
@@ -60,7 +59,6 @@ class AdvertDialogFragment: DialogFragment() {
                     (targetFragment as? MainFragment)?.advertAdapter?.notifyDataSetChanged()
 
                 }
-
             }
         }
         return@OnMenuItemClickListener false
@@ -95,8 +93,7 @@ class AdvertDialogFragment: DialogFragment() {
 
             val feedbackDialogBuilder = AlertDialog.Builder(mContext!!)
             feedbackDialogBuilder.setTitle(R.string.alert_title)
-            feedbackDialogBuilder.setItems(alertValues){
-                _, which ->
+            feedbackDialogBuilder.setItems(alertValues) { _, which ->
 
                 val selectedOption = which + 1
                 val sharedPref = activity?.getSharedPreferences(settingsFileName, 0)
@@ -169,7 +166,7 @@ class AdvertDialogFragment: DialogFragment() {
             })
 
 
-        } catch (e: JSONException){
+        } catch (e: JSONException) {
             Log.d(dialogFragmentTag, "JSONException: $e")
         }
 
@@ -181,11 +178,11 @@ class AdvertDialogFragment: DialogFragment() {
         }
         toolbar?.inflateMenu(R.menu.dialog_menu2)
 
-        if (targetFragment is BookmarksFragment){
+        if (targetFragment is BookmarksFragment) {
             toolbar?.menu?.getItem(0)?.isVisible = false
         }
 
-        if (item!!.isFavorite){
+        if (item!!.isFavorite) {
             toolbar?.menu?.getItem(0)?.setIcon(R.mipmap.baseline_favorite_white_36)
         } else {
             toolbar?.menu?.getItem(0)?.setIcon(R.mipmap.baseline_favorite_border_white_36)
@@ -220,8 +217,6 @@ class AdvertDialogFragment: DialogFragment() {
                     }
 
                 })
-
-
     }
 
 

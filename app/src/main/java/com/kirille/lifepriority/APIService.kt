@@ -9,9 +9,9 @@ import retrofit2.Retrofit
 
 
 interface APIService {
-    @GET("get")
+    @GET("/")
     fun getAdverts(
-            @Query("page") page: Int?,
+            @Query("last_date") lastDate: Int?,
             @Query("city") city: String?,
             @Query("key_words") key_words: String?,
             @Query("rent_type") rent_type: Int?,
