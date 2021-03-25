@@ -91,8 +91,6 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             it.isNotEmpty()
         }.toMutableList()
 
-        districtNames = resources.getStringArray(R.array.district_names)
-
 
         cityTextView = view.findViewById(R.id.city_select)
         val cityNames = resources.getStringArray(R.array.city_names)
@@ -106,6 +104,14 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         cityLayout.setOnClickListener {
             openCityDialog(view)
         }
+
+        val districtArray = when (city) {
+            "nn" -> R.array.district_names_nn
+            "msc" ->  R.array.district_names_msc
+            else -> R.array.district_names_spb
+        }
+
+        districtNames = resources.getStringArray(districtArray)
 
         val rentInCheckbox = view.findViewById<CheckBox>(R.id.rentInCheckbox)
         rentInCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -132,7 +138,6 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         val apartmentCheckbox = view.findViewById<CheckBox>(R.id.apartmentCheckbox)
         apartmentCheckbox.setOnCheckedChangeListener { _, isChecked ->
             isApartment = isChecked
-
         }
         apartmentCheckbox.isChecked = sharedPref!!.getBoolean("isApartment", false)
 
@@ -213,8 +218,15 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     private fun setDistrictView(view: View) {
         val districtLayout = view.findViewById<RelativeLayout>(R.id.districtLayout)
 
-        if (city == "nn" && (rentIn || (!rentIn && !rentOut))) {
-            val districtNames = resources.getStringArray(R.array.district_names)
+        if (rentIn || (!rentIn && !rentOut)) {
+
+            val districtArray = when (city) {
+                "nn" -> R.array.district_names_nn
+                "msc" ->  R.array.district_names_msc
+                else -> R.array.district_names_spb
+            }
+
+            val districtNames = resources.getStringArray(districtArray)
             districtTextView = view.findViewById(R.id.district_select)
 
             for (district in districtNames) {
@@ -222,12 +234,17 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             }
 
             if (currentDistricts.isEmpty()) {
-                districtTextView?.text = resources.getString(R.string.any_district)
+                val anyDistrict = when (city) {
+                    "msc" -> R.string.any_district_msc
+                    else -> R.string.any_district
+                }
+
+                districtTextView?.text = resources.getString(anyDistrict)
             } else {
                 districtTextView?.text = currentDistricts.joinToString(", ")
             }
 
-            districtLayout?.setOnClickListener { openDistrictDialog() }
+            districtLayout?.setOnClickListener { openDistrictDialog(districtArray) }
             districtLayout?.visibility = RelativeLayout.VISIBLE
         } else {
             currentDistricts.clear()
@@ -246,6 +263,20 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
             city = cityValues[which]
             cityTextView?.text = cityNames[which]
             selectedCityItem = which
+
+            checkedDistricts.clear()
+            currentDistricts.clear()
+
+            val districtArray = when (city) {
+                "nn" -> R.array.district_names_nn
+                "msc" ->  R.array.district_names_msc
+                else -> R.array.district_names_spb
+            }
+
+            districtNames = resources.getStringArray(districtArray)
+            setDistrictsNames()
+
+
             setDistrictView(view)
             dialog.cancel()
         }
@@ -255,12 +286,12 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
     }
 
 
-    private fun openDistrictDialog() {
-        val districtNames = resources.getStringArray(R.array.district_names)
+    private fun openDistrictDialog(districtNames: Int) {
+        val districtCityNames = resources.getStringArray(districtNames)
         val alertDialogBuilder = AlertDialog.Builder(mContext!!)
         val currentCheckedDistricts = checkedDistricts.toMutableList()
 
-        alertDialogBuilder.setMultiChoiceItems(districtNames, checkedDistricts.toBooleanArray()) {
+        alertDialogBuilder.setMultiChoiceItems(districtCityNames, checkedDistricts.toBooleanArray()) {
             _, which, isChecked ->
             currentCheckedDistricts[which] = isChecked
         }
@@ -292,7 +323,12 @@ class SettingsFragment : androidx.fragment.app.Fragment() {
         val districtsList = getDistrictsList()
 
         if (districtsList.isEmpty() || districtsList.size == districtNames?.size) {
-            districtTextView?.text = resources.getString(R.string.any_district)
+            val anyDistrict = when (city) {
+                "msc" -> R.string.any_district_msc
+                else -> R.string.any_district
+            }
+
+            districtTextView?.text = resources.getString(anyDistrict)
         } else {
             districtTextView?.text = districtsList.joinToString(", ")
         }

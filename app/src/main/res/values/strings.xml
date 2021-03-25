@@ -75,7 +75,7 @@
         <item>spb</item>
     </string-array>
 
-    <string-array name="district_names">
+    <string-array name="district_names_nn">
         <item>Автозаводский</item>
         <item>Канавинский</item>
         <item>Советский</item>
@@ -86,10 +86,47 @@
         <item>Московский</item>
     </string-array>
 
+    <string-array name="district_names_msc">
+        <item>Центральный</item>
+        <item>Северный</item>
+        <item>Северо-Восточный</item>
+        <item>Восточный</item>
+        <item>Юго-Восточный</item>
+        <item>Южный</item>
+        <item>Юго-Западный</item>
+        <item>Западный</item>
+        <item>Северо-Западный</item>
+        <item>Зеленоградский</item>
+        <item>Троицкий</item>
+        <item>Новомосковский</item>
+    </string-array>
+
+    <string-array name="district_names_spb">
+        <item>Адмиралтейский</item>
+        <item>Василеостровский</item>
+        <item>Выборгский</item>
+        <item>Калининский</item>
+        <item>Кировский</item>
+        <item>Колпинский</item>
+        <item>Красногвардейский</item>
+        <item>Красносельский</item>
+        <item>Кронштадтский</item>
+        <item>Курортный</item>
+        <item>Московский</item>
+        <item>Невский</item>
+        <item>Петроградский</item>
+        <item>Петродворцовый</item>
+        <item>Приморский</item>
+        <item>Пушкинский</item>
+        <item>Фрунзенский</item>
+        <item>Центральный</item>
+    </string-array>
+
     <string name="save_districts">OK</string>
     <string name="cancel_districts">Отмена</string>
 
     <string name="any_district">Любой район</string>
+    <string name="any_district_msc">Любой округ</string>
 
     <string name="enable_notifications">Push-уведомления</string>
 

@@ -41,7 +41,7 @@ interface APIService {
 
 
     companion object Factory {
-        private const val BASE_URL = "http://122.251.2.110/"
+        private const val BASE_URL = "http://api.rentads.ru/"
 
         fun create(): APIService {
             val retrofit = Retrofit.Builder()

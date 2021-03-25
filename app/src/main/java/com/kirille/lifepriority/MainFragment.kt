@@ -101,7 +101,7 @@ class MainFragment : androidx.fragment.app.Fragment() {
         refreshButton?.setOnClickListener {
             gridNoResults?.visibility = GridLayout.GONE
             swipeRefresh?.isEnabled = false
-            fetchAdverts()
+            fetchAdverts(firstPage = true)
         }
 
         fetchAdverts(firstPage = true)
