@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 
 class BookmarksActivity : AppCompatActivity() {
@@ -26,19 +27,19 @@ class BookmarksActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.dialog_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.dialog_menu, menu)
+        return true
     }
 
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
             R.id.action_back_home -> {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivityForResult(intent, 0)
+                startActivity(Intent(this, MainActivity::class.java))
                 true
             }
-            else -> super.onOptionsItemSelected(item!!)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

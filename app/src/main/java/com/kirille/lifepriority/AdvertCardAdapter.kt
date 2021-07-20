@@ -68,7 +68,7 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
 
             val view = holder.cardView
             val context = view.context
-            val item = items[holder.adapterPosition]
+            val item = items[holder.bindingAdapterPosition]
 
             holder.advertName.text = item.name
             holder.advertDate.text = getDateString(item.date, context.resources)
@@ -135,13 +135,13 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
 
             view.setOnClickListener {
                 if (clickListener != null) {
-                    clickListener?.onClick(item, holder.adapterPosition)
+                    clickListener?.onClick(item, holder.bindingAdapterPosition)
                 }
             }
 
             view.setOnLongClickListener {
                 if (longClickListener != null) {
-                    longClickListener?.onLongClick(item, holder.adapterPosition, holder)
+                    longClickListener?.onLongClick(item, holder.bindingAdapterPosition, holder)
                 }
                 true
             }

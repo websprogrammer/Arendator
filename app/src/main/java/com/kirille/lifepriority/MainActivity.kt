@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat
 
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -37,14 +36,12 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_settings -> {
                 val settingsIntent = Intent(this, SettingsActivity::class.java)
-                startActivityForResult(settingsIntent, 0)
-
+                startActivity(settingsIntent)
                 return true
             }
             R.id.action_bookmarks -> {
                 val bookmarksIntent = Intent(this, BookmarksActivity::class.java)
-                startActivityForResult(bookmarksIntent, 0)
-
+                startActivity(bookmarksIntent)
                 return true
             }
         }
