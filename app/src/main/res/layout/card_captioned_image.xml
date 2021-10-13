@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="7dp"
+    android:layout_marginBottom="1dp"
+    app:cardCornerRadius="0dp"
     app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,63 +17,81 @@
 
         <TextView
             android:id="@+id/advertName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:textColor="#2a5885"
+            android:fontFamily="@font/roboto"
+            android:textColor="#605199"
+            android:textSize="14sp"
+            android:maxLines="1"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/advertDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/advertDate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/advertName" />
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/contains_photos"
+            android:fontFamily="@font/roboto"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/advertName"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
-            android:id="@+id/advertText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:ellipsize="end"
-            android:text="@string/empty_description"
-            android:textColor="#000"
+            android:contentDescription="@string/contains_photos"
+            android:fontFamily="@font/roboto_slab"
+            android:textColor="#605199"
+            android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/advertDate" />
 
         <ImageView
             android:id="@+id/photosIcon"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
             android:contentDescription="@string/contains_photos"
-            app:layout_constraintBottom_toTopOf="@+id/advertText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/advertName"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/photosIcon2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/contains_photos"
+            app:layout_constraintStart_toEndOf="@+id/photosIcon"
+            app:layout_constraintTop_toBottomOf="@+id/advertName"
+            tools:ignore="MissingConstraints" />
+
 
         <ImageView
             android:id="@+id/favImage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/favorites_added"
-            android:src="@drawable/twotone_star_black_36"
-            app:layout_constraintBottom_toTopOf="@+id/advertText"
-            app:layout_constraintEnd_toStartOf="@+id/photosIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:tint="#2a5885" />
+            android:src="@drawable/outline_favorite_border_black_36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/price"
+            app:tint="#f00823"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/newAdvert"
@@ -85,10 +103,67 @@
             android:gravity="center"
             android:text="@string/new_ads_flag"
             android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/advertText"
             app:layout_constraintEnd_toStartOf="@+id/favImage"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
+
+        <LinearLayout
+            android:id="@+id/districtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded2"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photosIcon">
+
+            <TextView
+                android:id="@+id/district"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_gravity="center_horizontal"
+                android:ellipsize="none"
+                android:gravity="center_horizontal|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="#FFF"
+                tools:layout_editor_absoluteX="7dp"
+                tools:layout_editor_absoluteY="77dp" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="newAdvert,districtView,favImage,price,photosIcon2,photosIcon,advertDate,advertName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/advertText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto"
+            android:text="@string/empty_description"
+            android:textSize="13sp"
+            android:textColor="#000"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrier" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

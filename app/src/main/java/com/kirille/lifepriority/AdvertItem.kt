@@ -11,6 +11,8 @@ data class AdvertItem(
         var description: String,
         var photos: String,
         var date: Int,
+        var district: String,
+        var price: Int,
         var isFavorite: Boolean,
         var isSelected: Boolean,
         var isNew: Boolean

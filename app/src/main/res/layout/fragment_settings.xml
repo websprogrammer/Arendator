@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nested"
+    tools:context=".ui.settings.SettingsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
@@ -20,13 +21,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/cityLayout"
+            app:layout_constraintBottom_toTopOf="@+id/cityText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -37,38 +37,58 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:fontFamily="@font/roboto"
                 android:text="@string/enable_notifications"
+                android:textColor="#000"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 tools:ignore="RelativeOverlap" />
 
             <Switch
                 android:id="@+id/notificationsSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:paddingLeft="10dp"
+                android:thumbTint="@drawable/newthumb"
+                android:trackTint="@drawable/newthumb"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/cityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
+            android:text="@string/city"
+            android:textColor="#000"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/cityLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notificationsLayout" />
 
         <RelativeLayout
             android:id="@+id/cityLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/spinner_border"
+            android:background="@drawable/spinner_border2"
             android:orientation="horizontal"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/settingsText"
+            app:layout_constraintBottom_toTopOf="@+id/districtLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notificationsLayout">
+            app:layout_constraintTop_toBottomOf="@+id/cityText">
 
             <TextView
                 android:id="@+id/city_select"
@@ -76,8 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
+                android:fontFamily="@font/roboto"
                 android:spinnerMode="dialog"
+                android:textColor="#000"
                 android:textSize="15sp"
                 tools:ignore="RelativeOverlap" />
 
@@ -89,24 +110,73 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="4dp"
                 android:contentDescription="@string/drop_down_description"
-                app:srcCompat="@drawable/outline_arrow_drop_down_24" />
+                app:srcCompat="@drawable/outline_arrow_drop_down_24"
+                app:tint="@color/colorPrimary" />
 
         </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/districtLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/spinner_border2"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/settingsText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cityLayout">
+
+            <TextView
+                android:id="@+id/district_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/roboto"
+                android:spinnerMode="dialog"
+                android:textColor="#000"
+                android:textSize="15sp"
+                tools:ignore="RelativeOverlap" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="@string/drop_down_description"
+                app:srcCompat="@drawable/outline_arrow_drop_down_24"
+                app:tint="@color/colorPrimary" />
+
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/settingsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/roboto"
             android:text="@string/settings_text"
+            android:textColor="#000"
             android:textSize="15sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/rentInCheckbox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cityLayout"
+            app:layout_constraintTop_toBottomOf="@+id/districtLayout"
             app:layout_constraintVertical_bias="0.0" />
 
         <CheckBox
@@ -114,9 +184,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto"
+            android:minHeight="48dp"
             android:text="@string/rent_in"
             android:textSize="15sp"
+            android:theme="@style/AdvertCheckBox"
             android:translationX="-5dp"
             app:layout_constraintBottom_toTopOf="@+id/rentOutCheckbox"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,8 +203,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/roboto"
+            android:minHeight="48dp"
             android:text="@string/rent_out"
             android:textSize="15sp"
+            android:theme="@style/AdvertCheckBox"
             android:translationX="-5dp"
             app:layout_constraintBottom_toTopOf="@+id/apartmentCheckbox"
             app:layout_constraintEnd_toEndOf="parent"
@@ -145,10 +220,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:fontFamily="@font/roboto"
+            android:minHeight="48dp"
             android:text="@string/apartment"
             android:textSize="15sp"
+            android:theme="@style/AdvertCheckBox"
             android:translationX="-5dp"
             app:layout_constraintBottom_toTopOf="@+id/roomCheckbox"
             app:layout_constraintEnd_toEndOf="parent"
@@ -161,76 +238,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="@font/roboto"
+            android:minHeight="48dp"
             android:text="@string/room"
             android:textSize="15sp"
+            android:theme="@style/AdvertCheckBox"
             android:translationX="-5dp"
-            app:layout_constraintBottom_toTopOf="@+id/districtLayout"
+            app:layout_constraintBottom_toTopOf="@+id/edtInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/apartmentCheckbox" />
 
-        <RelativeLayout
-            android:id="@+id/districtLayout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/keyWordsText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/spinner_border"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:visibility="visible"
+            android:fontFamily="@font/roboto"
+            android:text="@string/key_words"
+            android:textColor="#000"
+            android:textSize="13sp"
+            android:textStyle="bold"
+
             app:layout_constraintBottom_toTopOf="@+id/edtInput"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roomCheckbox">
-
-            <TextView
-                android:id="@+id/district_select"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="24dp"
-                android:spinnerMode="dialog"
-                android:textSize="15sp"
-                tools:ignore="RelativeOverlap" />
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="4dp"
-                android:contentDescription="@string/drop_down_description"
-                app:srcCompat="@drawable/outline_arrow_drop_down_24" />
-
-        </RelativeLayout>
-
+            app:layout_constraintTop_toBottomOf="@+id/roomCheckbox" />
 
         <EditText
             android:id="@+id/edtInput"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/key_words"
+            android:background="@drawable/spinner_border2"
+            android:hint=""
             android:inputType="text"
+            android:paddingTop="5dp"
             android:scrollHorizontally="false"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textCursorDrawable="@drawable/color_cursor"
             app:layout_constraintBottom_toTopOf="@+id/buttonAdd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roomCheckbox"
-            tools:ignore="Autofill" />
+            app:layout_constraintTop_toBottomOf="@+id/keyWordsText"
+            tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck" />
 
         <Button
             android:id="@+id/buttonAdd"
@@ -249,23 +306,42 @@
             android:id="@+id/keyWordsRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none"
             android:layout_marginStart="8dp"
             android:overScrollMode="never"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonAdd" />
 
         <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
             android:gravity="center"
             android:visibility="gone"
+            android:theme="@style/ProgressBarTheme"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:clickable="true"
+            android:background="@drawable/rounded2"
+            android:text="@string/save_settings"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/keyWordsRecycler"
+            android:focusable="true" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

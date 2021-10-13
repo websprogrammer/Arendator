@@ -15,13 +15,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.button.MaterialButton
 import com.google.gson.JsonObject
+import com.kirille.lifepriority.ui.home.HomeFragment
 import org.json.JSONArray
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
+import java.util.*
 
 
 class AdvertDialogFragment : DialogFragment() {
@@ -35,42 +38,13 @@ class AdvertDialogFragment : DialogFragment() {
 
     private val settingsFileName = "com.kirille.lifepriority.prefs"
 
-    private val menuListener: Toolbar.OnMenuItemClickListener = Toolbar.OnMenuItemClickListener { itemMenu ->
-        when (itemMenu?.itemId) {
-            R.id.vk_link -> {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(item!!.profileLink))
-                startActivity(browserIntent)
-            }
-
-            R.id.action_favorite -> {
-                if (targetFragment is MainFragment) {
-                    val menuMenu = toolbar?.menu?.getItem(0)
-
-                    if (item!!.isFavorite) {
-                        DeleteFavoriteTask(mContext!!, item!!.postId).execute()
-                        item!!.isFavorite = false
-                        menuMenu?.setIcon(R.mipmap.baseline_favorite_border_white_36)
-                    } else {
-                        AddFavoriteTask(mContext!!, item!!).execute()
-                        item!!.isFavorite = true
-                        menuMenu?.setIcon(R.mipmap.baseline_favorite_white_36)
-                    }
-
-                    (targetFragment as? MainFragment)?.advertAdapter?.notifyDataSetChanged()
-
-                }
-            }
-        }
-        return@OnMenuItemClickListener false
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
     }
 
-    @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams", "NotifyDataSetChanged")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_dialog, container, false)
 
@@ -86,9 +60,35 @@ class AdvertDialogFragment : DialogFragment() {
         val advertTextDetail = view.findViewById<TextView>(R.id.advertTextDetail)
         advertTextDetail.text = item!!.description
 
+        val price = item!!.price
+        if (price > 0) {
+            val advertPrice = view.findViewById<TextView>(R.id.price)
+
+            val priceString = try {
+                NumberFormat.getInstance(Locale.FRANCE).format(price)
+            } catch (e: IllegalArgumentException){
+                price.toString()
+            }
+
+            advertPrice.text = resources.getString(
+                R.string.currency,
+                priceString
+            )
+            advertPrice.visibility = View.VISIBLE
+
+        }
+
+        val districtItem = item!!.district
+        if (districtItem.isNotEmpty()) {
+            val districtView = view.findViewById<LinearLayout>(R.id.districtView)
+            val district = view.findViewById<TextView>(R.id.district)
+            district.text = item!!.district
+            districtView.visibility = View.VISIBLE
+        }
+
         val alertValues = resources.getStringArray(R.array.alert_values)
 
-        val floatButton = view.findViewById<FloatingActionButton>(R.id.floatButton)
+        val floatButton = view.findViewById<ImageButton>(R.id.floatButton)
         floatButton.setOnClickListener {
 
             val feedbackDialogBuilder = AlertDialog.Builder(mContext!!)
@@ -132,6 +132,11 @@ class AdvertDialogFragment : DialogFragment() {
             feedbackDialogBuilder.show()
         }
 
+        val profileLinkButton = view.findViewById<MaterialButton>(R.id.profileLinkButton)
+        profileLinkButton.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(item?.profileLink))
+            startActivity(browserIntent)
+        }
 
 
         try {
@@ -165,7 +170,6 @@ class AdvertDialogFragment : DialogFragment() {
                 }
             })
 
-
         } catch (e: JSONException) {
             Log.d(dialogFragmentTag, "JSONException: $e")
         }
@@ -176,22 +180,34 @@ class AdvertDialogFragment : DialogFragment() {
         toolbar?.setNavigationOnClickListener {
             dismiss()
         }
-        toolbar?.inflateMenu(R.menu.dialog_menu2)
 
-        if (targetFragment is BookmarksFragment) {
-            toolbar?.menu?.getItem(0)?.isVisible = false
-        }
-
+        val favoriteImage = view.findViewById<ImageView>(R.id.favImage)
         if (item!!.isFavorite) {
-            toolbar?.menu?.getItem(0)?.setIcon(R.mipmap.baseline_favorite_white_36)
+            favoriteImage.setImageResource(R.drawable.outline_favorite_black_36)
         } else {
-            toolbar?.menu?.getItem(0)?.setIcon(R.mipmap.baseline_favorite_border_white_36)
+            favoriteImage.setImageResource(R.drawable.outline_favorite_border_black_36)
         }
 
-        toolbar?.setOnMenuItemClickListener(menuListener)
+        if (targetFragment is HomeFragment) {
+
+            favoriteImage.setOnClickListener {
+                if (item!!.isFavorite) {
+                    DeleteFavoriteTask(mContext!!, item!!.postId).execute()
+                    item!!.isFavorite = false
+                    favoriteImage.setImageResource(R.drawable.outline_favorite_border_black_36)
+                } else {
+                    AddFavoriteTask(mContext!!, item!!).execute()
+                    item!!.isFavorite = true
+                    favoriteImage.setImageResource(R.drawable.outline_favorite_black_36)
+                }
+
+                (targetFragment as? HomeFragment)?.advertAdapter?.notifyDataSetChanged()
+            }
+        }
 
         return view
     }
+
 
 
     private fun sendFeedback(view: View, city: String, item: AdvertItem, type: Int, message: String) {

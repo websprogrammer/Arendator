@@ -1,6 +1,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
@@ -34,13 +35,16 @@
 
             <TextView
                 android:id="@+id/advertNameDetail"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textColor="#2a5885"
-                android:textColorLink="#2a5885"
+                android:layout_marginStart="12dp"
+                android:fontFamily="@font/roboto"
+                android:textColor="#605199"
+                android:textColorLink="#605199"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintVertical_chainStyle="packed"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@+id/advertDateDetail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,35 +52,93 @@
                 android:id="@+id/advertDateDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="12dp"
+                android:fontFamily="@font/roboto"
+                android:textColor="#7b7b7b"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/advertNameDetail" />
+                app:layout_constraintStart_toEndOf="@+id/advertNameDetail"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/contains_photos"
+                android:fontFamily="@font/roboto_slab"
+                android:textColor="#605199"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/advertDateDetail" />
 
             <TextView
                 android:id="@+id/advertTextDetail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:fontFamily="@font/roboto"
                 android:textColor="#000"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/advertDateDetail" />
+                app:layout_constraintTop_toBottomOf="@+id/favImage" />
 
+            <LinearLayout
+                android:id="@+id/districtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded2"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider">
+
+                <TextView
+                    android:id="@+id/district"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center_horizontal"
+                    android:ellipsize="none"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="#FFF" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/favImage"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/favorites_added"
+                android:src="@drawable/outline_favorite_border_black_36"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:tint="#f00823"
+                tools:ignore="MissingConstraints" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/advertTextDetail"/>
+                app:layout_constraintTop_toBottomOf="@+id/advertTextDetail" />
 
             <ProgressBar
                 android:layout_width="match_parent"
@@ -89,23 +151,97 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/divider"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginTop="12dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/price" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginTop="12dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recycler_photo_view" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatButton"
+    <LinearLayout
+        android:layout_gravity="bottom|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/alert_octagon"
-        app:backgroundTint="@color/design_default_color_error"
-        app:elevation="2dp"
-        app:tint="@android:color/white" />
+        android:orientation="horizontal">
 
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|end">
+
+            <ImageButton
+                android:id="@+id/floatButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded4"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/roboto"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_float_button"
+                android:stateListAnimator="@null"
+                android:text="@string/vk_link"
+                android:textColor="#FFF"
+                tools:ignore="HardcodedText,UnusedAttribute"
+                android:contentDescription="@string/alert_button_description" />
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/profileLinkButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded3"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_profile_button"
+                android:elevation="3dp"
+                android:focusable="true"
+                android:fontFamily="@font/roboto"
+                android:gravity="center"
+                android:text="@string/vk_link"
+                android:textColor="@color/colorWhite"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_profile_button" />
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

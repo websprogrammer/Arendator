@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:indeterminate="true"
+        android:theme="@style/ProgressBarTheme"
         android:paddingLeft="8dp"
         android:paddingRight="8dp" />
 

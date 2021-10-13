@@ -1,56 +1,72 @@
 package com.kirille.lifepriority
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
 import androidx.core.app.ActivityCompat
+import androidx.core.view.forEach
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
+import com.kirille.lifepriority.databinding.ActivityMainBinding
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        FirebaseApp.initializeApp(this);
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        val navView: BottomNavigationView = binding.navView
 
-        if (savedInstanceState == null){
-            val fragment = MainFragment()
-            val ft = supportFragmentManager.beginTransaction()
-            ft.add(R.id.content_frame, fragment)
-            ft.commit()
-        }
-    }
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.navigation_home, R.id.navigation_favorite, R.id.navigation_settings))
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.dialog_menu3, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+        navView.menu.forEach { it ->
+            it.setOnMenuItemClickListener {
+                val toolbar = findViewById<Toolbar>(R.id.app_toolbar)
+                if (it.itemId == R.id.navigation_home){
+                    toolbar.title = resources.getString(R.string.app_name)
+                } else {
+                    toolbar.title = it.title
+                }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> {
-                val settingsIntent = Intent(this, SettingsActivity::class.java)
-                startActivity(settingsIntent)
-                return true
+                toolbar.menu?.clear()
+                toolbar.navigationIcon = null
+
+                it.isChecked
+
             }
-            R.id.action_bookmarks -> {
-                val bookmarksIntent = Intent(this, BookmarksActivity::class.java)
-                startActivity(bookmarksIntent)
-                return true
-            }
         }
-        return super.onOptionsItemSelected(item)
+
+        val actionBar = supportActionBar!!
+        actionBar.hide()
+
     }
+
 
     override fun onBackPressed() {
-        super.onBackPressed();
-        ActivityCompat.finishAffinity(this);
+        if (binding.navView.selectedItemId == R.id.navigation_home) {
+            super.onBackPressed();
+            ActivityCompat.finishAffinity(this);
+        } else {
+            binding.navView.selectedItemId = R.id.navigation_home
+            startActivity(intent);
+        }
     }
 
 }

@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="30dp"
     android:layout_margin="5dp"
-    android:background="@drawable/rounded"
+    android:background="@drawable/rounded2"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +13,10 @@
         android:layout_gravity="center_horizontal"
         android:ellipsize="end"
         android:gravity="center_horizontal|center_vertical"
-        android:padding="5dp"
-        android:textColor="#2a5885"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/colorWhite"
         android:singleLine="true" />
 </LinearLayout>

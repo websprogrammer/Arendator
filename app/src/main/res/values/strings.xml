@@ -4,6 +4,7 @@
     <string name="action_bookmarks">Закладки</string>
 
     <string name="home">Главная</string>
+    <string name="home_title">Объявления</string>
     <string name="remove_bookmarks">Удалить закладки</string>
 
     <string name="confirm">Да</string>
@@ -17,9 +18,10 @@
     <string name="add_favorites">Добавить в избранное</string>
 
     <string name="empty_description">Смотрите фото для подробностей</string>
+    <string name="currency">%1$s руб</string>
 
     <string name="photo_description">Фотография</string>
-    <string name="vk_link">Ссылка на профиль</string>
+    <string name="vk_link">В профиль пользователя</string>
 
     <string name="farebase_error">Произошла ошибка при синхронизации с Google Play. Убедитесь, что у вас активирована последняя версия для получения уведомлений.</string>
     <string name="send_token_error">Произошла ошибка при сохранении настроек на сервере. Попробуйте снова через некоторое время.</string>
@@ -63,15 +65,20 @@
         <item>Декабря</item>
     </string-array>
 
+    <string name="city">Город</string>
+    <string name="district">Район</string>
+
     <string-array name="city_names">
         <item>Нижний Новгород</item>
         <item>Москва</item>
+        <item>Сочи</item>
         <item>Санкт-Петербург</item>
     </string-array>
 
     <string-array name="city_values" translatable="false">
         <item>nn</item>
         <item>msc</item>
+        <item>soc</item>
         <item>spb</item>
     </string-array>
 
@@ -99,6 +106,13 @@
         <item>Зеленоградский</item>
         <item>Троицкий</item>
         <item>Новомосковский</item>
+    </string-array>
+
+    <string-array name="district_names_soc">
+        <item>Лазаревский</item>
+        <item>Хостинский</item>
+        <item>Центральный</item>
+        <item>Адлерский</item>
     </string-array>
 
     <string-array name="district_names_spb">
@@ -130,10 +144,11 @@
 
     <string name="enable_notifications">Push-уведомления</string>
 
-    <string name="save_settings">Сохранить настройки</string>
+    <string name="save_settings">Сохранить</string>
 
     <string name="new_ads_flag">new</string>
 
+    <string name="alert_button_description">Кнопка сообщения об ошибке</string>
     <string name="alert_title">Сообщить об ошибке</string>
     <string name="other_alert_title">Опишите ошибку</string>
     <string-array name="alert_values">
@@ -143,7 +158,7 @@
         <item>Другое</item>
     </string-array>
 
-    <string name="settings_text">Я хочу:</string>
+    <string name="settings_text">Я хочу</string>
     <string name="rent_in">Снять</string>
     <string name="rent_out">Сдать</string>
 

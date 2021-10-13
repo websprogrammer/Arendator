@@ -1,5 +1,6 @@
-package com.kirille.lifepriority
+package com.kirille.lifepriority.ui.home
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
@@ -8,18 +9,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.JsonObject
+import com.kirille.lifepriority.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-class MainFragment : androidx.fragment.app.Fragment() {
+class HomeFragment : Fragment() {
     private var mContext: Context? = null
 
     var advertAdapter: AdvertCardAdapter? = null
@@ -42,8 +45,12 @@ class MainFragment : androidx.fragment.app.Fragment() {
     private var gridNoResults: GridLayout? = null
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
 
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
@@ -105,7 +112,9 @@ class MainFragment : androidx.fragment.app.Fragment() {
         }
 
         fetchAdverts(firstPage = true)
+
         return view
+
     }
 
 
@@ -124,17 +133,19 @@ class MainFragment : androidx.fragment.app.Fragment() {
                 advert!!
 
                 items.add(
-                        AdvertItem(
-                                advert.get("PostId")!!.asInt,
-                                advert.get("ProfileName")!!.asString,
-                                advert.get("ProfileLink")!!.asString,
-                                advert.get("Description")!!.asString.trimEnd(),
-                                advert.get("Photos")!!.toString(),
-                                advert.get("Date")!!.asInt,
-                                isFavorite = false,
-                                isSelected = false,
-                                isNew = false
-                        ))
+                    AdvertItem(
+                        advert.get("PostId")!!.asInt,
+                        advert.get("ProfileName")!!.asString,
+                        advert.get("ProfileLink")!!.asString,
+                        advert.get("Description")!!.asString.trimEnd(),
+                        advert.get("Photos")!!.toString(),
+                        advert.get("Date")!!.asInt,
+                        advert.get("District")!!.asString,
+                        advert.get("Price")!!.asInt,
+                        isFavorite = false,
+                        isSelected = false,
+                        isNew = false
+                    ))
             }
 
             swipeRefresh?.isEnabled = true
@@ -186,15 +197,17 @@ class MainFragment : androidx.fragment.app.Fragment() {
             progressBar?.visibility = View.VISIBLE
         } else {
             items.add(AdvertItem(
-                    -1,
-                    "",
-                    "",
-                    "",
-                    "",
-                    -1,
-                    isFavorite = false,
-                    isSelected = false,
-                    isNew = false
+                -1,
+                "",
+                "",
+                "",
+                "",
+                -1,
+                "",
+                0,
+                isFavorite = false,
+                isSelected = false,
+                isNew = false
             ))
             hasItemLoader = true
             advertsRecycler?.post {
@@ -206,44 +219,44 @@ class MainFragment : androidx.fragment.app.Fragment() {
 
         val apiService = APIService.create()
         apiService
-                .getAdverts(lastDate, city, keyWords, rentType, roomType, districts)
-                .enqueue(object : Callback<JsonObject> {
-                    override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                        try {
-                            if (hasItemLoader) {
-                                removeItemLoader()
-                            }
-
-                            if (response.isSuccessful) {
-                                val body = response.body()
-                                handleResponse(body!!, firstPage)
-                            } else {
-                                setEmptyView()
-                            }
-
-                        } finally {
-                            progressBar?.visibility = View.GONE
-                        }
-                    }
-
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+            .getAdverts(lastDate, city, keyWords, rentType, roomType, districts)
+            .enqueue(object : Callback<JsonObject> {
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    try {
                         if (hasItemLoader) {
                             removeItemLoader()
                         }
-                        Toast.makeText(
-                                activity,
-                                R.string.results_failure,
-                                Toast.LENGTH_LONG
-                        ).show()
 
-                        if (firstPage) {
+                        if (response.isSuccessful) {
+                            val body = response.body()
+                            handleResponse(body!!, firstPage)
+                        } else {
                             setEmptyView()
                         }
 
+                    } finally {
                         progressBar?.visibility = View.GONE
-                        scrollAvailable = false
                     }
-                })
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    if (hasItemLoader) {
+                        removeItemLoader()
+                    }
+                    Toast.makeText(
+                        activity,
+                        R.string.results_failure,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    if (firstPage) {
+                        setEmptyView()
+                    }
+
+                    progressBar?.visibility = View.GONE
+                    scrollAvailable = false
+                }
+            })
 
     }
 
@@ -256,11 +269,12 @@ class MainFragment : androidx.fragment.app.Fragment() {
 
             advertDialogFragment.arguments = args
             advertDialogFragment.setTargetFragment(this, requestCode)
-            advertDialogFragment.show(activity?.supportFragmentManager!!, dialogTaskTag)
+            advertDialogFragment.show(parentFragmentManager, dialogTaskTag)
         }
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
 
@@ -274,4 +288,5 @@ class MainFragment : androidx.fragment.app.Fragment() {
         super.onAttach(context)
         mContext = context
     }
+
 }

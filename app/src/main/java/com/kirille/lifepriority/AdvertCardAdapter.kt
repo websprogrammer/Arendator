@@ -1,10 +1,12 @@
 package com.kirille.lifepriority
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -14,8 +16,10 @@ import com.bumptech.glide.request.RequestOptions
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.ArrayList
+import java.text.NumberFormat
+import java.util.*
 import java.util.concurrent.ExecutionException
+
 
 class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var clickListener: ClickListener? = null
@@ -36,10 +40,13 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
     class ItemViewHolder(val cardView: CardView) : RecyclerView.ViewHolder(cardView) {
             val favImage: ImageView = itemView.findViewById(R.id.favImage)
             val photosIcon: ImageView = itemView.findViewById(R.id.photosIcon)
+            val photosIcon2: ImageView = itemView.findViewById(R.id.photosIcon2)
             val advertName: TextView = itemView.findViewById(R.id.advertName)
             val advertText: TextView = itemView.findViewById(R.id.advertText)
             val advertDate: TextView = itemView.findViewById(R.id.advertDate)
-            val newAdvert: TextView = itemView.findViewById(R.id.newAdvert)
+//            val newAdvert: TextView = itemView.findViewById(R.id.newAdvert)
+            val district: TextView = itemView.findViewById(R.id.district)
+            val price: TextView = itemView.findViewById(R.id.price)
     }
 
     inner class ViewHolderLoading(val view: View) : RecyclerView.ViewHolder(view)
@@ -61,6 +68,7 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
             // TODO Add handler for images in recyclerview - https://bumptech.github.io/glide/int/recyclerview.html
@@ -79,11 +87,37 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
                 holder.advertText.text = item.description
             }
 
+            if (item.district.isEmpty()){
+                holder.district.visibility = Button.GONE
+            } else {
+                holder.district.text = item.district
+                holder.district.visibility = Button.VISIBLE
+            }
+
+            if (item.price > 0) {
+
+                val priceString = try {
+                    NumberFormat.getInstance(Locale.FRANCE).format(item.price)
+                } catch (e: IllegalArgumentException){
+                    item.price.toString()
+                }
+
+                holder.price.text = context.resources.getString(
+                        R.string.currency,
+                    priceString
+                )
+                holder.price.visibility = View.VISIBLE
+            } else {
+                holder.price.visibility = View.GONE
+            }
+
+
             val photos = try {
                 JSONArray(item.photos)
             } catch (e: JSONException) {
                 JSONArray()
             }
+
 
             if (photos.length() > 0) {
                 val photoUrl = try {
@@ -99,8 +133,28 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
                         .into(holder.photosIcon)
 
                 holder.photosIcon.visibility = View.VISIBLE
+
+                if (photos.length() > 1) {
+                    val photoUrl2 = try {
+                        (photos[1] as JSONObject).getString("small")
+                    } catch (e: JSONException) {
+                        throw RuntimeException(e)
+                    }
+                    Glide
+                            .with(context)
+                            .load(photoUrl2)
+                            .thumbnail(0.1f)
+                            .apply(RequestOptions().placeholder(ColorDrawable(Color.parseColor("#edeef0"))))
+                            .into(holder.photosIcon2)
+
+                    holder.photosIcon2.visibility = View.VISIBLE
+                } else {
+                    holder.photosIcon2.visibility = View.GONE
+                }
+
             } else {
                 holder.photosIcon.visibility = View.GONE
+                holder.photosIcon2.visibility = View.GONE
             }
 
 
@@ -112,10 +166,23 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
                 false
             }
 
+
             if (isFavorite) {
-                holder.favImage.visibility = View.VISIBLE
+                holder.favImage.setImageResource(R.drawable.outline_favorite_black_36)
             } else {
-                holder.favImage.visibility = View.GONE
+                holder.favImage.setImageResource(R.drawable.outline_favorite_border_black_36)
+            }
+
+            holder.favImage.setOnClickListener {
+                val newFavorite = !isFavorite
+                if (newFavorite) {
+                    AddFavoriteTask(context!!, item).execute()
+                } else {
+                    DeleteFavoriteTask(context!!, item.postId).execute()
+                }
+
+                item.isFavorite = !newFavorite
+                this.notifyDataSetChanged()
             }
 
             item.isFavorite = isFavorite
@@ -124,12 +191,6 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
                 view.setCardBackgroundColor(Color.parseColor("#ABCAE8"))
             } else {
                 view.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-            }
-
-            if (item.isNew) {
-                holder.newAdvert.visibility = TextView.VISIBLE
-            } else {
-                holder.newAdvert.visibility = TextView.GONE
             }
 
 
