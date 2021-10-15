@@ -120,6 +120,7 @@ class HomeFragment : Fragment() {
 
     private fun handleResponse(body: JsonObject, firstPage: Boolean) {
         val adverts = body.get("Adverts")
+        val (city, _, _, _, _, _) = getPreferences(activity, resources)
 
         if (adverts.isJsonNull) {
             if (firstPage) {
@@ -132,6 +133,22 @@ class HomeFragment : Fragment() {
                 val advert = jsonData.get(i)?.asJsonObject
                 advert!!
 
+                val district = advert.get("District")!!.asString
+                val districtArrayId = when (city) {
+                    "nn" -> R.array.district_names_nn
+                    "msc" ->  R.array.district_names_msc
+                    "soc" ->  R.array.district_names_soc
+                    else -> R.array.district_names_spb
+                }
+                val districtArray = resources.getStringArray(districtArrayId)
+
+
+                val districtValue = if (district in districtArray) {
+                    district
+                } else {
+                    ""
+                }
+
                 items.add(
                     AdvertItem(
                         advert.get("PostId")!!.asInt,
@@ -140,7 +157,7 @@ class HomeFragment : Fragment() {
                         advert.get("Description")!!.asString.trimEnd(),
                         advert.get("Photos")!!.toString(),
                         advert.get("Date")!!.asInt,
-                        advert.get("District")!!.asString,
+                        districtValue,
                         advert.get("Price")!!.asInt,
                         isFavorite = false,
                         isSelected = false,

@@ -8,14 +8,10 @@ import java.lang.ref.WeakReference
 
 class GetFavorite(mContext: Context, _postId: Int) : AsyncTask<Void, Void, Boolean>() {
     private val fragmentReference: WeakReference<Context> = WeakReference(mContext)
-    private var databaseHelper: DataBaseHelper
+    private var databaseHelper: DataBaseHelper = DataBaseHelper(fragmentReference.get())
     private val postId: Int = _postId
 
     private var isFavorite = false
-
-    init {
-        databaseHelper = DataBaseHelper(fragmentReference.get())
-    }
 
     override fun doInBackground(vararg params: Void?): Boolean {
         try {

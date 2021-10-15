@@ -3,7 +3,6 @@ package com.kirille.lifepriority.ui.bookmarks
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
@@ -14,23 +13,20 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kirille.lifepriority.*
-import java.lang.ref.WeakReference
 
 
 class BookmarksFragment : Fragment() {
 
     private var mContext: Context? = null
-    public var view2: View? = null
+    var view2: View? = null
 
     private var advertsRecycler: RecyclerView? = null
     var advertAdapter: AdvertCardAdapter? = null
@@ -92,9 +88,6 @@ class BookmarksFragment : Fragment() {
 
             if (itemsToDelete.isEmpty()) {
                 bookmarksToolbar?.title= resources.getString(R.string.bookmarks)
-//                bookmarksToolbar?.title = ""
-//                bookmarksToolbar?.setTitle("")
-//                bookmarksToolbar?.inflateMenu(R.menu.dialog_menu)
                 bookmarksToolbar?.navigationIcon = null
             } else {
                 bookmarksToolbar?.title = itemsToDelete.size.toString()
@@ -111,15 +104,10 @@ class BookmarksFragment : Fragment() {
                 }
 
 
-                bookmarksToolbar?.inflateMenu(R.menu.dialog_menu4)
+                bookmarksToolbar?.inflateMenu(R.menu.dialog_menu)
                 bookmarksToolbar?.setOnMenuItemClickListener(object : Toolbar.OnMenuItemClickListener {
                     override fun onMenuItemClick(item: MenuItem?): Boolean {
                         when (item?.itemId) {
-                            R.id.action_back_home -> {
-                                val intent = Intent(mContext, MainActivity::class.java)
-                                startActivityForResult(intent, 0)
-                                return true
-                            }
 
                             R.id.action_remove_bookmarks -> {
                                 val alertDialog = AlertDialog.Builder(activity!!)
@@ -130,7 +118,6 @@ class BookmarksFragment : Fragment() {
                                 title.setPadding(25, 20, 25, 20)
                                 title.setTextColor(resources.getColor(R.color.colorBlack))
                                 title.textSize = 14f
-
 
                                 alertDialog.setCustomTitle(title)
                                 alertDialog.setPositiveButton(
@@ -169,7 +156,6 @@ class BookmarksFragment : Fragment() {
 
 //        advertsRecycler = inflater.inflate(R.layout.fragment_bookmarks, container, false) as RecyclerView
 
-
         advertsRecycler = view.findViewById(R.id.favorite_adverts_recycler)
         advertAdapter = AdvertCardAdapter(items)
         linearLayoutManager = LinearLayoutManager(mContext)
@@ -196,13 +182,12 @@ class BookmarksFragment : Fragment() {
     fun clearToolbar(bookmarksToolbar: Toolbar) {
         bookmarksToolbar.menu?.clear()
         bookmarksToolbar.title = resources.getString(R.string.bookmarks)
-//        bookmarksToolbar.inflateMenu(R.menu.dialog_menu)
         bookmarksToolbar.navigationIcon = null
     }
 
     fun setEmptyView() {
-        val empty_view = view2?.findViewById<TextView>(R.id.empty_view)
-        empty_view?.visibility = TextView.VISIBLE
+        val emptyView = view2?.findViewById<TextView>(R.id.empty_view)
+        emptyView?.visibility = TextView.VISIBLE
 
 //        val empty = view.findViewById<GridLayout>(R.id.no_results)
 //        empty?.visibility = GridLayout.VISIBLE
@@ -284,9 +269,7 @@ class BookmarksFragment : Fragment() {
 
     @SuppressLint("StaticFieldLeak")
     inner class DeleteBookmarksTask(val view: View) : AsyncTask<Void, Void, Boolean>() {
-//        private val fragmentReference: WeakReference<Context> = WeakReference(mContext)
         private var dialog: DialogFragment? = null
-//        private var view = view
 
         init {
             dialog = DialogDeleteBookmarks()

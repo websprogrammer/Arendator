@@ -26,34 +26,6 @@ import retrofit2.Response
 class SettingsFragment : Fragment() {
 
     private lateinit var settingsViewModel: SettingsViewModel
-//    private var _binding: FragmentNotificationsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-//    private val binding get() = _binding!!
-
-//    override fun onCreateView(
-//            inflater: LayoutInflater,
-//            container: ViewGroup?,
-//            savedInstanceState: Bundle?
-//    ): View? {
-//        notificationsViewModel =
-//                ViewModelProvider(this).get(SettingsViewModel::class.java)
-//
-//        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
-//
-//        val textView: TextView = binding.textNotifications
-//        notificationsViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
-//        return root
-//    }
-
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-////        _binding = null
-//    }
 
     private var mContext: Context? = null
     private var sharedPref: SharedPreferences? = null
@@ -265,6 +237,7 @@ class SettingsFragment : Fragment() {
 
             setDistrictsNames()
 
+            // TODO check without this block and remove if everything is ok.
             /*if (currentDistricts.isEmpty()) {
                 val anyDistrict = when (city) {
                     "msc" -> R.string.any_district_msc
