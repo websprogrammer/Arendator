@@ -333,6 +333,7 @@
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             android:clickable="true"
+            android:visibility="gone"
             android:background="@drawable/rounded2"
             android:text="@string/save_settings"
             app:layout_constraintBottom_toBottomOf="parent"

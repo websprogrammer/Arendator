@@ -1,5 +1,6 @@
 package com.kirille.lifepriority
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
@@ -13,15 +14,30 @@ class DataBaseHelper(_context: Context?) : SQLiteOpenHelper(_context, DATABASE_N
                         + "NAME TEXT, "
                         + "PROFILE_LINK TEXT, "
                         + "DESCRIPTION TEXT, "
-                        + "PHOTOS TEXT, "
+                        + "DISTRICT TEXT, "
+                        + "PRICE INTEGER, "
+                        + "PHOTOS INTEGER, "
                         + "DATE INTEGER);"
         )
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        if (oldVersion == 1 && newVersion == 2) {
+            db?.execSQL("ALTER TABLE FAVORITES ADD COLUMN DISTRICT TEXT;")
+            db?.execSQL("ALTER TABLE FAVORITES ADD COLUMN PRICE INTEGER;")
+
+            val defaultValues = ContentValues()
+            // Set default values for added columns.
+            defaultValues.put("DISTRICT", "")
+            defaultValues.put("PRICE", 0)
+            db?.update("FAVORITES", defaultValues, null, null)
+        }
+
+
+    }
 
     companion object {
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         private const val DATABASE_NAME = "adverts"
     }
 

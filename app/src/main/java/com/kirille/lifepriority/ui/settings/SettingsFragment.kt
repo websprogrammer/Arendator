@@ -212,6 +212,23 @@ class SettingsFragment : Fragment() {
         setDistrictView(view)
         setKeyWords()
 
+
+        val toolbar =  activity?.findViewById<Toolbar>(R.id.app_toolbar)
+        toolbar?.inflateMenu(R.menu.settings_menu)
+        toolbar?.setOnMenuItemClickListener(object : Toolbar.OnMenuItemClickListener {
+            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                when (item?.itemId) {
+
+                    R.id.action_save_settings -> {
+                        saveSettings()
+                        return true
+
+                    }
+                }
+                return false
+            }
+        })
+
         return view
     }
 

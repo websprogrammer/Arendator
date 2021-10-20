@@ -18,6 +18,8 @@ class AddFavoriteTask(mContext: Context, _item: AdvertItem) : AsyncTask<Void, Vo
         favoritesValues.put("NAME", item.name)
         favoritesValues.put("PROFILE_LINK", item.profileLink)
         favoritesValues.put("DESCRIPTION", item.description)
+        favoritesValues.put("DISTRICT", item.district)
+        favoritesValues.put("PRICE", item.price)
         favoritesValues.put("PHOTOS", item.photos)
         favoritesValues.put("DATE", item.date)
     }

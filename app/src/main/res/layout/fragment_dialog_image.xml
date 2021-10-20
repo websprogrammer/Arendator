@@ -20,19 +20,23 @@
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints">
 
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@null"
-            android:contentDescription="@string/return_back"
-            android:src="@mipmap/baseline_arrow_back_white_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/buttonBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@null"
+                android:text="@string/close"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/colorWhite"
+                android:fontFamily="@font/roboto"
+                android:contentDescription="@string/return_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/lbl_count"

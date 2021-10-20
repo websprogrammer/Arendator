@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -111,12 +112,12 @@ class BookmarksFragment : Fragment() {
 
                             R.id.action_remove_bookmarks -> {
                                 val alertDialog = AlertDialog.Builder(activity!!)
-//                                alertDialog.setTitle(R.string.confirm_bookmarks_deletion)
 
                                 val title = TextView(context)
                                 title.text = resources.getText(R.string.confirm_bookmarks_deletion)
                                 title.setPadding(25, 20, 25, 20)
                                 title.setTextColor(resources.getColor(R.color.colorBlack))
+                                title.typeface = ResourcesCompat.getFont(context!!, R.font.roboto)
                                 title.textSize = 14f
 
                                 alertDialog.setCustomTitle(title)
@@ -157,7 +158,7 @@ class BookmarksFragment : Fragment() {
 //        advertsRecycler = inflater.inflate(R.layout.fragment_bookmarks, container, false) as RecyclerView
 
         advertsRecycler = view.findViewById(R.id.favorite_adverts_recycler)
-        advertAdapter = AdvertCardAdapter(items)
+        advertAdapter = AdvertCardAdapter(items, false)
         linearLayoutManager = LinearLayoutManager(mContext)
 
         advertsRecycler?.adapter = advertAdapter
@@ -201,7 +202,7 @@ class BookmarksFragment : Fragment() {
 
         favoriteCursor = db?.query(
             "FAVORITES",
-            arrayOf("POST_ID", "NAME", "PROFILE_LINK", "DESCRIPTION", "PHOTOS", "DATE"),
+            arrayOf("POST_ID", "NAME", "PROFILE_LINK", "DESCRIPTION", "DISTRICT", "PRICE", "PHOTOS", "DATE"),
             null,
             null,
             null,
@@ -215,8 +216,11 @@ class BookmarksFragment : Fragment() {
             val name = favoriteCursor!!.getString(favoriteCursor!!.getColumnIndexOrThrow("NAME"))
             val profileLink = favoriteCursor!!.getString(favoriteCursor!!.getColumnIndexOrThrow("PROFILE_LINK"))
             val description = favoriteCursor!!.getString(favoriteCursor!!.getColumnIndexOrThrow("DESCRIPTION"))
+            val district = favoriteCursor!!.getString(favoriteCursor!!.getColumnIndexOrThrow("DISTRICT"))
+            val price = favoriteCursor!!.getInt(favoriteCursor!!.getColumnIndexOrThrow("PRICE"))
             val photos = favoriteCursor!!.getString(favoriteCursor!!.getColumnIndexOrThrow("PHOTOS"))
             val date = favoriteCursor!!.getInt(favoriteCursor!!.getColumnIndexOrThrow("DATE"))
+
 
             val item = AdvertItem(
                 postId,
@@ -225,8 +229,8 @@ class BookmarksFragment : Fragment() {
                 description.trimEnd(),
                 photos,
                 date,
-                "",
-                0,
+                district,
+                price,
                 isFavorite = true,
                 isSelected = false,
                 isNew = false

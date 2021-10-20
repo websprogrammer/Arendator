@@ -21,7 +21,7 @@ import java.util.*
 import java.util.concurrent.ExecutionException
 
 
-class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdvertCardAdapter(private var items: ArrayList<AdvertItem>, private var isMainFragment: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var clickListener: ClickListener? = null
     private var longClickListener: LongClickListener? = null
 
@@ -173,16 +173,19 @@ class AdvertCardAdapter(private var items: ArrayList<AdvertItem>) : RecyclerView
                 holder.favImage.setImageResource(R.drawable.outline_favorite_border_black_36)
             }
 
-            holder.favImage.setOnClickListener {
-                val newFavorite = !isFavorite
-                if (newFavorite) {
-                    AddFavoriteTask(context!!, item).execute()
-                } else {
-                    DeleteFavoriteTask(context!!, item.postId).execute()
-                }
 
-                item.isFavorite = !newFavorite
-                this.notifyDataSetChanged()
+            if (isMainFragment){
+                holder.favImage.setOnClickListener {
+                    val newFavorite = !isFavorite
+                    if (newFavorite) {
+                        AddFavoriteTask(context!!, item).execute()
+                    } else {
+                        DeleteFavoriteTask(context!!, item.postId).execute()
+                    }
+
+                    item.isFavorite = !newFavorite
+                    this.notifyDataSetChanged()
+                }
             }
 
             item.isFavorite = isFavorite

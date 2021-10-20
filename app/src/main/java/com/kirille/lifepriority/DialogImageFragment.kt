@@ -57,7 +57,7 @@ class DialogImageFragment : DialogFragment() {
         lblCount = view.findViewById(R.id.lbl_count)
         lblCount?.text = getString(R.string.gallery_count, 1, photoArray.length())
 
-        val buttonBack = view.findViewById<ImageButton>(R.id.buttonBack)
+        val buttonBack = view.findViewById<TextView>(R.id.buttonBack)
         buttonBack.setOnClickListener {
             dismiss()
         }

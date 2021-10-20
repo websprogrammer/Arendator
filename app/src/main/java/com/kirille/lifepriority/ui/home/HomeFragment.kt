@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
 
         progressBar = view.findViewById(R.id.progressBar)
 
-        advertAdapter = AdvertCardAdapter(items)
+        advertAdapter = AdvertCardAdapter(items, true)
         advertAdapter?.setClickListener(object : AdvertCardAdapter.ClickListener {
             override fun onClick(item: AdvertItem, position: Int) {
                 openDialog(item)

@@ -42,4 +42,9 @@
     </style>
 
 
+    <style name="ToolBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="actionMenuTextColor">@color/colorWhite</item>
+        <item name="android:actionMenuTextColor">@color/colorWhite</item>
+    </style>
+
 </resources>
